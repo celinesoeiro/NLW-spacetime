@@ -1,0 +1,29 @@
+{
+  "name": "nlw-spacetime",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsx watch src/server.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/celinesoeiro/NLW-spacetime.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/celinesoeiro/NLW-spacetime/issues"
+  },
+  "homepage": "https://github.com/celinesoeiro/NLW-spacetime#readme",
+  "devDependencies": {
+    "@types/node": "^20.2.0",
+    "tsx": "^3.12.7",
+    "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "fastify": "^4.17.0"
+  }
+}
