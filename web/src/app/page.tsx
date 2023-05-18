@@ -1,6 +1,3 @@
-
 export default function Home() {
-  return (
-    <h1>Hello, world!</h1>
-  )
+  return <h1 className="text-lg text-red-700 font-bold">Hello, world!</h1>
 }
