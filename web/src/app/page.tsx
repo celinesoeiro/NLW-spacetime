@@ -2,6 +2,7 @@ import { User } from 'lucide-react'
 
 import nlwLogo from '../assets/nlw-spacetime-logo.svg'
 import Image from 'next/image'
+import { env } from 'process'
 
 export default function Home() {
   return (
@@ -15,7 +16,10 @@ export default function Home() {
         <div className="absolute bottom-0 right-2 top-0 w-2  bg-stripes" />
 
         {/** SignIn */}
-        <a href="" className="flex items-center gap-3 text-left">
+        <a
+          href={`https://github.com/login/oauth/authorize?client_id=${env.NEXT_PUBLIC_GITHUB_CLIENT_ID}`}
+          className="flex items-center gap-3 text-left"
+        >
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-400">
             <User className="h-5 w-5 text-gray-500" />
           </div>
