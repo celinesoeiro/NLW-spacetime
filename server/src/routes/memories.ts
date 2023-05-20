@@ -35,21 +35,67 @@ export async function memoriesRoutes(app: FastifyInstance) {
     return memory
   })
 
-  app.post('/memories', async () => {
-    const memories = await prisma.memory.findMany()
+  app.post('/memories', async (request) => {
+    const bodyScheme = z.object({
+      content: z.string(),
+      coverUrl: z.string(),
+      isPublic: z.coerce.boolean().default(false), // coerce converts the value to boolean -> Boolean(value)
+    })
 
-    return memories
+    const { content, isPublic, coverUrl } = bodyScheme.parse(request.body)
+
+    const memory = await prisma.memory.create({
+      data: {
+        content,
+        coverUrl,
+        isPublic,
+        userId: '39dc4794-7818-4b2a-8219-f290033d5098',
+      },
+    })
+
+    return memory
   })
 
-  app.put('/memories/:id', async () => {
-    const memories = await prisma.memory.findMany()
+  app.put('/memories/:id', async (request) => {
+    const paramsScheme = z.object({
+      id: z.string().uuid(),
+    })
 
-    return memories
+    const { id } = paramsScheme.parse(request.params)
+
+    const bodyScheme = z.object({
+      content: z.string(),
+      coverUrl: z.string(),
+      isPublic: z.coerce.boolean().default(false), // coerce converts the value to boolean -> Boolean(value)
+    })
+
+    const { content, isPublic, coverUrl } = bodyScheme.parse(request.body)
+
+    const updatedMemory = await prisma.memory.update({
+      where: {
+        id,
+      },
+      data: {
+        content,
+        coverUrl,
+        isPublic,
+      },
+    })
+
+    return updatedMemory
   })
 
-  app.delete('/memories/:id', async () => {
-    const memories = await prisma.memory.findMany()
+  app.delete('/memories/:id', async (request) => {
+    const paramsScheme = z.object({
+      id: z.string().uuid(),
+    })
 
-    return memories
+    const { id } = paramsScheme.parse(request.params)
+
+    await prisma.memory.delete({
+      where: {
+        id,
+      },
+    })
   })
 }
