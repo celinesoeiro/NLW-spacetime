@@ -1,8 +1,9 @@
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import { ImageBackground, View, Text, TouchableOpacity } from 'react-native'
 import { StatusBar } from 'expo-status-bar'
 import { makeRedirectUri, useAuthRequest } from 'expo-auth-session'
 import * as SecureStore from 'expo-secure-store'
+import { useRouter } from 'expo-router'
 import {
   useFonts,
   Roboto_400Regular,
@@ -11,11 +12,11 @@ import {
 import { BaiJamjuree_700Bold } from '@expo-google-fonts/bai-jamjuree'
 import { styled } from 'nativewind'
 
-import Stripes from './assets/stripes.svg'
-import Logo from './assets/nlw-logo.svg'
-import blurBg from './assets/luz.png'
+import Stripes from '../assets/stripes.svg'
+import Logo from '../assets/nlw-logo.svg'
+import blurBg from '../assets/luz.png'
 
-import { api } from './lib/api'
+import { api } from '../lib/api'
 
 const StyledStripes = styled(Stripes)
 
@@ -27,7 +28,9 @@ const discovery = {
 }
 
 export default function App() {
-  const [request, response, signinWithGithub] = useAuthRequest(
+  const router = useRouter()
+
+  const [, response, signinWithGithub] = useAuthRequest(
     {
       clientId: '072d421155ccf9796760',
       scopes: ['identity'],
@@ -38,26 +41,30 @@ export default function App() {
     discovery,
   )
 
+  const handleGithubOAuthCode = useCallback(
+    async (code: string) => {
+      const response = await api.post('/register', {
+        code,
+      })
+
+      const { token } = response.data
+
+      await SecureStore.setItemAsync('token', token)
+
+      router.push('/memories')
+    },
+    [router],
+  )
+
   useEffect(() => {
     if (response?.type === 'success') {
       const { code } = response.params
 
-      api
-        .post('/register', {
-          code,
-        })
-        .then((response) => {
-          const { token } = response.data
-
-          SecureStore.setItemAsync('token', token)
-        })
-        .catch((err) => {
-          console.error(err)
-        })
+      handleGithubOAuthCode(code)
 
       console.log(code)
     }
-  }, [response])
+  }, [response, handleGithubOAuthCode])
 
   const [hasLoadedFonts] = useFonts({
     Roboto_400Regular,
