@@ -25,6 +25,7 @@ export function MediaPicker() {
         className="invisible h-0 w-0"
         onChange={onFileSelected}
         accept="image/*"
+        name="coverURL"
       />
 
       {preview && (
