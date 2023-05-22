@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { ImageBackground } from 'react-native'
 import { styled } from 'nativewind'
+import * as SecureStore from 'expo-secure-store'
 
 import {
   useFonts,
@@ -17,11 +18,21 @@ import { StatusBar } from 'expo-status-bar'
 const StyledStripes = styled(Stripes)
 
 export default function Layout() {
+  const [isUserAuthenticated, setIsUserAuthenticated] = useState<
+    null | boolean
+  >(null)
+
   const [hasLoadedFonts] = useFonts({
     Roboto_400Regular,
     Roboto_700Bold,
     BaiJamjuree_700Bold,
   })
+
+  useEffect(() => {
+    SecureStore.getItemAsync('token').then((token) => {
+      setIsUserAuthenticated(!!token)
+    })
+  }, [])
 
   if (!hasLoadedFonts) {
     // Only shows interface after the fonts hae loaded
@@ -43,7 +54,10 @@ export default function Layout() {
           headerShown: false,
           contentStyle: { backgroundColor: 'transparent' },
         }}
-      />
+      >
+        <Stack.Screen name="index" redirect={isUserAuthenticated} />
+        <Stack.Screen name="memories" />
+      </Stack>
     </ImageBackground>
   )
 }
